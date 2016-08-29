@@ -1,6 +1,6 @@
 /**
  * @file: anti_arpspoof.cpp
- * @author Ricardo Román <https://telegram.me/reroman
+ * @author Ricardo Román <reroman4@gmail.com>
  * 
  * Tool to detect ARP spoofing
  */
@@ -44,15 +44,22 @@ using namespace std;
 #include <unistd.h>
 #include <signal.h>
 
+/// Length in bytes of one Hardware Address.
 #define MAC_ADDR_LEN	6
+
+/// Length in bytes of one IP Address.
 #define IP_ADDR_LEN		4
+
+/// Defines the IP 0.0.0.1.
 #define IP_ONE		htonl( 1 )
+
+/// The maximum number of attempts to resolve a HW Address.
 #define MAX_TRIES_FOR_RESOLV	5
 
 // ===============================
 // Global variables
 // ===============================
-atomic<bool> active( true ); /// To control the analysis
+atomic<bool> active( true ); ///< Controls the guard() function.
 
 
 
@@ -66,6 +73,11 @@ atomic<bool> active( true ); /// To control the analysis
 struct HWAddr{
 	uint8_t hw[MAC_ADDR_LEN];
 
+	/**
+	 * Creates an HWAddr object from an array of bytes with length size of 6.
+	 *
+	 * @param m The array with the 6 bytes of the HW Address.
+	 */
 	HWAddr( const uint8_t m[] ){
 		memcpy( hw, m, MAC_ADDR_LEN );
 	}
@@ -74,6 +86,12 @@ struct HWAddr{
 		return memcmp( hw, m.hw, MAC_ADDR_LEN ) < 0;
 	}
 
+	/**
+	 * Get a string representation of the HW Address in
+	 * the format xx:xx:xx:xx:xx:xx.
+	 *
+	 * @return The string representation of the HW Address.
+	 */
 	string toString() const {
 		ostringstream out;
 
@@ -90,30 +108,35 @@ struct HWAddr{
 
 };
 
+/**
+ * The representation of a ARP Frame including the 
+ * ethernet header.
+ */
 struct ARPFrame{
-	uint8_t		eth_dst[MAC_ADDR_LEN];
-	uint8_t		eth_src[MAC_ADDR_LEN];
-	uint16_t	eth_ethertype;
-	uint16_t	hw_type;
-	uint16_t	protocol;
-	uint8_t		hw_len;
-	uint8_t		proto_len;
-	uint16_t	opcode;
-	uint8_t		hw_src[MAC_ADDR_LEN];
-	uint32_t	ip_src;
-	uint8_t		hw_dst[MAC_ADDR_LEN];
-	uint32_t	ip_dst;
+	uint8_t		eth_dst[MAC_ADDR_LEN]; 	///< Ethernet destination address.
+	uint8_t		eth_src[MAC_ADDR_LEN]; 	///< Ethernet source address.
+	uint16_t	eth_ethertype;			///< Eheternet ethertype.
+	uint16_t	hw_type; 				///< ARP hardware type (Ethernet 0x0001).
+	uint16_t	protocol;				///< ARP protocol (IP 0x0800).
+	uint8_t		hw_len;					///< ARP lenght in bytes of hardware address.
+	uint8_t		proto_len;				///< ARP lenght in byte of protocol address.
+	uint16_t	opcode;					///< ARP Operation code (0x0001 for request, 0x0002 for reply).
+	uint8_t		hw_src[MAC_ADDR_LEN]; 	///< ARP source HW address.
+	uint32_t	ip_src;					///< ARP source Protocol address.
+	uint8_t		hw_dst[MAC_ADDR_LEN];	///< ARP target HW address.
+	uint32_t	ip_dst;					///< ARP target Protocol address.
 } __attribute__((__packed__));
 
+/** Represents a key-value table.*/
 typedef map< HWAddr, struct in_addr> ARPTable;
 
 /** Stores some info about the netdevice */
 struct LocalData{
-	int ifindex;
-	uint32_t ipAddr;
-	uint32_t firstHost;
-	uint32_t lastHost;
-	uint8_t hwAddr[MAC_ADDR_LEN];
+	int ifindex;					///< Index of the network interface.
+	uint32_t ipAddr;				///< IP Address of the network interface.
+	uint32_t firstHost;				///< IP Address of the first host in the network.
+	uint32_t lastHost;				///< IP Address of the last host in the network.
+	uint8_t hwAddr[MAC_ADDR_LEN];	///< Hawrdware Address of the network interface.
 };
 
 
@@ -121,7 +144,15 @@ struct LocalData{
 // Functions
 // ===============================
 
-/** Get the local data of the netdevice */
+/**
+ * Get the local data of the netdevice given
+ * the interface name.
+ *
+ * @param ifname The name of the network interface
+ * @return A LocalData object with the local information.
+ *
+ * @throw runtime_error If some field couldn't be acquired.
+ */
 LocalData loadLocalData( const char *ifname ) throw( runtime_error ) 
 {
 	struct ifreq nic;
@@ -167,7 +198,17 @@ LocalData loadLocalData( const char *ifname ) throw( runtime_error )
 	return data;
 }
 
-/** Creates a socket for ARP frames */
+/**
+ * Creates a socket for ARP frames.
+ *
+ * @param ifindex The network interface index to bind the socket.
+ * @return The socket descriptor.
+ *
+ * @throw runtime_error If the socket couldn't be opened (open raw sockets requires
+ * root provileges).
+ * @throw runtime_error  The maximum time to wait for a response couldn't be configured.
+ * @throw runtime_error socket could't bind to the interface.
+ */
 int initSocket( int ifindex ) throw( runtime_error )
 {
 	int sockfd;
@@ -193,7 +234,15 @@ int initSocket( int ifindex ) throw( runtime_error )
 	return sockfd;
 }
 
-/** Adds a permanent entry to the ARP cache of the system */
+/**
+ * Adds a permanent entry to the ARP cache of the system.
+ *
+ * @param ifname Name of the network interface.
+ * @param ip IP Address v4 of the new arp entry.
+ * @param hw An HWAddr object that contains the info about the hardware address.
+ *
+ * @throw runtime_error If the new entry couldn't be added.
+ * */
 void addARPEntry(const char *ifname, struct in_addr ip, const HWAddr &hw)
 	throw( runtime_error )
 {
@@ -215,7 +264,18 @@ void addARPEntry(const char *ifname, struct in_addr ip, const HWAddr &hw)
 	close( sock );
 }
 
-/** Makes a scan for ARP entries */
+/**
+ * Makes a scan for ARP entries.
+ *
+ * @param sfd The ARP socket to send/receive ARP frames.
+ * @param ld An LocalData object that contains the local info about the
+ * network interface.
+ *
+ * @return ARPTable that contains the ARP entries in the network.
+ *
+ * @note The last host is not included in the scan.
+ * @see initSocket()
+ */
 ARPTable scan( int sfd, const LocalData &ld )
 {
 	struct in_addr host;
@@ -223,6 +283,7 @@ ARPTable scan( int sfd, const LocalData &ld )
 	ARPFrame request, reply;
 	int attempts;
 
+	// Setting constant values of the request
 	memset( request.eth_dst, 0xff, MAC_ADDR_LEN );
 	memcpy( request.eth_src, ld.hwAddr, MAC_ADDR_LEN );
 	request.eth_ethertype = htons( ETH_P_ARP );
@@ -235,24 +296,26 @@ ARPTable scan( int sfd, const LocalData &ld )
 	request.ip_src = ld.ipAddr;
 	memset( request.hw_dst, 0, MAC_ADDR_LEN );
 
+	// Bucle for hosts
 	for( host.s_addr = ld.firstHost ; host.s_addr != ld.lastHost ; host.s_addr += IP_ONE ){
 		request.ip_dst = host.s_addr;
 		attempts = MAX_TRIES_FOR_RESOLV;
 		cout << "Resolving " << inet_ntoa( host ) << '\r';
 		cout.flush();
-		write( sfd, &request, sizeof(request) );
+		write( sfd, &request, sizeof(request) ); // Send the request.
 		do{
-			if( read( sfd, &reply, sizeof(reply) ) > 0 ){
+			if( read( sfd, &reply, sizeof(reply) ) > 0 ){ // Receive the reply
+				// Verify the reply and sender.
 				if( ntohs(reply.opcode) == ARPOP_REPLY && reply.ip_src == host.s_addr ){
 					HWAddr hw( reply.hw_src );
 					struct in_addr aux = { reply.ip_src };
 					table[hw] = aux;
 					attempts = 0;
 				}
-				else
+				else // Not the answer what we want.
 					attempts--;
 			}
-			else
+			else // Some error or no response.
 				attempts = 0;
 		}while( attempts );
 	}
@@ -261,7 +324,16 @@ ARPTable scan( int sfd, const LocalData &ld )
 }
 
 
-/** Analyzes new ARP replies */
+/**
+ * An infinite bucle that analyzes new ARP replies.
+ * The bucle stops setting ::active to false.
+ *
+ * @param sfd The ARP socket for receive ARP replies.
+ * @param ifname The name of the interface network.
+ * @param table The ARPTable that contains the ARP entries. 
+ *
+ * @throw runtime_error If a request of add ARP entry failed.
+ */
 void guard( int sfd, const char *ifname, const ARPTable &table )
 {
 	ARPFrame reply;
@@ -270,17 +342,21 @@ void guard( int sfd, const char *ifname, const ARPTable &table )
 	bool find;
 
 	while( active ){
+		// Receive the data
 		if( read( sfd, &reply, sizeof(reply) ) > 0 ){
+			// Verify the reply
 			if( ntohs(reply.opcode) == ARPOP_REPLY ){
 				HWAddr hw( reply.hw_src );
 				struct in_addr ip = { reply.ip_src };
 
 				try{
-					struct in_addr reg = table.at(hw); // Check our ARP Table
+					struct in_addr reg = table.at(hw); // Check our ARP Table for the sender.
 
 					if( reg.s_addr != ip.s_addr ){ // If the MAC doesn't match with the IP
 						if( ignored.find(ip.s_addr) == ignored.end() ){ // ... And it's not ignored
 							find = true;
+
+							// Notice to the user
 							cout << hw.toString() << " is poisoning " << inet_ntoa(ip) << 
 								". Would you like to add a permanent entry to avoid the faking? (Y/N) ";
 							getline( cin, option );
@@ -301,12 +377,13 @@ void guard( int sfd, const char *ifname, const ARPTable &table )
 									}
 								}
 							}
-							if( !find )
+							if( !find ) // The IP spoofed is not in out ARP Table
 								cout << "There's a missing entry. Please run the tool again for a new scan." << endl;
 							ignored.insert( ip.s_addr );
 						} // End if for ignoring
 					} // End if for not matching IP
 				}
+				// The HW Address of the sender is not in our ARP Table
 				catch( out_of_range ){
 					cout << "There's a new device. You should try with a new scan." << endl;
 				} // The received entry is not in our ARP Table
@@ -315,11 +392,19 @@ void guard( int sfd, const char *ifname, const ARPTable &table )
 	} // End while
 }
 
-/** Kill signal handler */
+/**
+ * Kill signal handler. Change the value of ::active to stop
+ * the execution of guard().
+ */
 void sigKill(int){
 	active = false;
 }
 
+/**
+ * Main function of the program.
+ *
+ * @param interface_name The name of the network interface to use.
+ */
 int main( int argc, char **argv )
 {
 	if( argc != 2 ){
@@ -343,6 +428,7 @@ int main( int argc, char **argv )
 
 	arpTable = scan( sockfd, data );
 	
+	// Output the ARP table.
 	cout << arpTable.size() << " entries found. "
 		"If you think there's missing devices, please run the tool again.\n\n"
 		"\tHW Address\t\t\tIP Address\n";
