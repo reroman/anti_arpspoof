@@ -1,0 +1,274 @@
+\hypertarget{anti__arpspoof_8cpp}{}\section{anti\+\_\+arpspoof.\+cpp File Reference}
+\label{anti__arpspoof_8cpp}\index{anti\+\_\+arpspoof.\+cpp@{anti\+\_\+arpspoof.\+cpp}}
+{\ttfamily \#include $<$iostream$>$}\\*
+{\ttfamily \#include $<$iomanip$>$}\\*
+{\ttfamily \#include $<$map$>$}\\*
+{\ttfamily \#include $<$set$>$}\\*
+{\ttfamily \#include $<$string$>$}\\*
+{\ttfamily \#include $<$sstream$>$}\\*
+{\ttfamily \#include $<$stdexcept$>$}\\*
+{\ttfamily \#include $<$atomic$>$}\\*
+{\ttfamily \#include $<$cstring$>$}\\*
+{\ttfamily \#include $<$cerrno$>$}\\*
+{\ttfamily \#include $<$sys/types.\+h$>$}\\*
+{\ttfamily \#include $<$sys/socket.\+h$>$}\\*
+{\ttfamily \#include $<$sys/ioctl.\+h$>$}\\*
+{\ttfamily \#include $<$net/if.\+h$>$}\\*
+{\ttfamily \#include $<$linux/if\+\_\+packet.\+h$>$}\\*
+{\ttfamily \#include $<$linux/if\+\_\+arp.\+h$>$}\\*
+{\ttfamily \#include $<$net/ethernet.\+h$>$}\\*
+{\ttfamily \#include $<$netinet/in.\+h$>$}\\*
+{\ttfamily \#include $<$arpa/inet.\+h$>$}\\*
+{\ttfamily \#include $<$sys/time.\+h$>$}\\*
+{\ttfamily \#include $<$unistd.\+h$>$}\\*
+{\ttfamily \#include $<$signal.\+h$>$}\\*
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \hyperlink{structHWAddr}{H\+W\+Addr}
+\item 
+struct \hyperlink{structARPFrame}{A\+R\+P\+Frame}
+\item 
+struct \hyperlink{structLocalData}{Local\+Data}
+\end{DoxyCompactItemize}
+\subsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \hyperlink{anti__arpspoof_8cpp_a60cf9af36f952be0feb59d1f49d5edff}{M\+A\+C\+\_\+\+A\+D\+D\+R\+\_\+\+L\+EN}~6\hypertarget{anti__arpspoof_8cpp_a60cf9af36f952be0feb59d1f49d5edff}{}\label{anti__arpspoof_8cpp_a60cf9af36f952be0feb59d1f49d5edff}
+
+\begin{DoxyCompactList}\small\item\em Length in bytes of one Hardware Address. \end{DoxyCompactList}\item 
+\#define \hyperlink{anti__arpspoof_8cpp_aec550a179f6cebe6d10b9cf600144012}{I\+P\+\_\+\+A\+D\+D\+R\+\_\+\+L\+EN}~4\hypertarget{anti__arpspoof_8cpp_aec550a179f6cebe6d10b9cf600144012}{}\label{anti__arpspoof_8cpp_aec550a179f6cebe6d10b9cf600144012}
+
+\begin{DoxyCompactList}\small\item\em Length in bytes of one IP Address. \end{DoxyCompactList}\item 
+\#define \hyperlink{anti__arpspoof_8cpp_a6a1af8b6796eec0b2326b5c5b121d194}{I\+P\+\_\+\+O\+NE}~htonl( 1 )\hypertarget{anti__arpspoof_8cpp_a6a1af8b6796eec0b2326b5c5b121d194}{}\label{anti__arpspoof_8cpp_a6a1af8b6796eec0b2326b5c5b121d194}
+
+\begin{DoxyCompactList}\small\item\em Defines the IP 0.\+0.\+0.\+1. \end{DoxyCompactList}\item 
+\#define \hyperlink{anti__arpspoof_8cpp_a90ae8bce0e702b3e62cf5c9f5ae7763a}{M\+A\+X\+\_\+\+T\+R\+I\+E\+S\+\_\+\+F\+O\+R\+\_\+\+R\+E\+S\+O\+LV}~5\hypertarget{anti__arpspoof_8cpp_a90ae8bce0e702b3e62cf5c9f5ae7763a}{}\label{anti__arpspoof_8cpp_a90ae8bce0e702b3e62cf5c9f5ae7763a}
+
+\begin{DoxyCompactList}\small\item\em The maximum number of attempts to resolve a HW Address. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+typedef map$<$ \hyperlink{structHWAddr}{H\+W\+Addr}, struct in\+\_\+addr $>$ \hyperlink{anti__arpspoof_8cpp_ab5a8cfc7e0cab98b0d38facd150fa88f}{A\+R\+P\+Table}
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+atomic$<$ bool $>$ \hyperlink{anti__arpspoof_8cpp_a86f4ad84fe44506f4ac3d531f829ff78}{active} (true)\hypertarget{anti__arpspoof_8cpp_a86f4ad84fe44506f4ac3d531f829ff78}{}\label{anti__arpspoof_8cpp_a86f4ad84fe44506f4ac3d531f829ff78}
+
+\begin{DoxyCompactList}\small\item\em Controls the \hyperlink{anti__arpspoof_8cpp_a187ab4e15f19947179159d8307dc68f6}{guard()} function. \end{DoxyCompactList}\item 
+\hyperlink{structLocalData}{Local\+Data} \hyperlink{anti__arpspoof_8cpp_aa5626403c6a9bdd9e4dc5a144e428a04}{load\+Local\+Data} (const char $\ast$ifname)  throw ( runtime\+\_\+error )
+\item 
+int \hyperlink{anti__arpspoof_8cpp_a4fd3109d5d32adbc9741b550b0294d49}{init\+Socket} (int ifindex)  throw ( runtime\+\_\+error )
+\item 
+void \hyperlink{anti__arpspoof_8cpp_a329365409847e3a90ddffd0e866e4a39}{add\+A\+R\+P\+Entry} (const char $\ast$ifname, struct in\+\_\+addr ip, const \hyperlink{structHWAddr}{H\+W\+Addr} \&hw)  throw ( runtime\+\_\+error )
+\item 
+\hyperlink{anti__arpspoof_8cpp_ab5a8cfc7e0cab98b0d38facd150fa88f}{A\+R\+P\+Table} \hyperlink{anti__arpspoof_8cpp_a2d6d95490ff2aa1fbf3a1a1b5dbe2494}{scan} (int sfd, const \hyperlink{structLocalData}{Local\+Data} \&ld)
+\item 
+void \hyperlink{anti__arpspoof_8cpp_a187ab4e15f19947179159d8307dc68f6}{guard} (int sfd, const char $\ast$ifname, const \hyperlink{anti__arpspoof_8cpp_ab5a8cfc7e0cab98b0d38facd150fa88f}{A\+R\+P\+Table} \&table)
+\item 
+void \hyperlink{anti__arpspoof_8cpp_a0ade92ac52186d55fad10cc54749baa3}{sig\+Kill} (int)
+\item 
+int \hyperlink{anti__arpspoof_8cpp_a3c04138a5bfe5d72780bb7e82a18e627}{main} (int argc, char $\ast$$\ast$argv)
+\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+uint8\+\_\+t \hyperlink{anti__arpspoof_8cpp_a09f2f46c4009084238ec5073597ed8bb}{eth\+\_\+dst} \mbox{[}\hyperlink{anti__arpspoof_8cpp_a60cf9af36f952be0feb59d1f49d5edff}{M\+A\+C\+\_\+\+A\+D\+D\+R\+\_\+\+L\+EN}\mbox{]}\hypertarget{anti__arpspoof_8cpp_a09f2f46c4009084238ec5073597ed8bb}{}\label{anti__arpspoof_8cpp_a09f2f46c4009084238ec5073597ed8bb}
+
+\begin{DoxyCompactList}\small\item\em Ethernet destination address. \end{DoxyCompactList}\item 
+uint8\+\_\+t \hyperlink{anti__arpspoof_8cpp_a5e10abe71e53e1fa5fa139c9f0ee135a}{eth\+\_\+src} \mbox{[}\hyperlink{anti__arpspoof_8cpp_a60cf9af36f952be0feb59d1f49d5edff}{M\+A\+C\+\_\+\+A\+D\+D\+R\+\_\+\+L\+EN}\mbox{]}\hypertarget{anti__arpspoof_8cpp_a5e10abe71e53e1fa5fa139c9f0ee135a}{}\label{anti__arpspoof_8cpp_a5e10abe71e53e1fa5fa139c9f0ee135a}
+
+\begin{DoxyCompactList}\small\item\em Ethernet source address. \end{DoxyCompactList}\item 
+uint16\+\_\+t \hyperlink{anti__arpspoof_8cpp_abdb4aad96b659e9ab10d24201346946f}{eth\+\_\+ethertype}\hypertarget{anti__arpspoof_8cpp_abdb4aad96b659e9ab10d24201346946f}{}\label{anti__arpspoof_8cpp_abdb4aad96b659e9ab10d24201346946f}
+
+\begin{DoxyCompactList}\small\item\em Eheternet ethertype. \end{DoxyCompactList}\item 
+uint16\+\_\+t \hyperlink{anti__arpspoof_8cpp_a9fbc3a3bf466c35e457cc82328075722}{hw\+\_\+type}\hypertarget{anti__arpspoof_8cpp_a9fbc3a3bf466c35e457cc82328075722}{}\label{anti__arpspoof_8cpp_a9fbc3a3bf466c35e457cc82328075722}
+
+\begin{DoxyCompactList}\small\item\em A\+RP hardware type (Ethernet 0x0001). \end{DoxyCompactList}\item 
+uint16\+\_\+t \hyperlink{anti__arpspoof_8cpp_ab551400c74271f35d0c79f81d29cffbb}{protocol}\hypertarget{anti__arpspoof_8cpp_ab551400c74271f35d0c79f81d29cffbb}{}\label{anti__arpspoof_8cpp_ab551400c74271f35d0c79f81d29cffbb}
+
+\begin{DoxyCompactList}\small\item\em A\+RP protocol (IP 0x0800). \end{DoxyCompactList}\item 
+uint8\+\_\+t \hyperlink{anti__arpspoof_8cpp_ad6c9114be422c9a0d4a90e5a20d1cfb1}{hw\+\_\+len}\hypertarget{anti__arpspoof_8cpp_ad6c9114be422c9a0d4a90e5a20d1cfb1}{}\label{anti__arpspoof_8cpp_ad6c9114be422c9a0d4a90e5a20d1cfb1}
+
+\begin{DoxyCompactList}\small\item\em A\+RP lenght in bytes of hardware address. \end{DoxyCompactList}\item 
+uint8\+\_\+t \hyperlink{anti__arpspoof_8cpp_a0bed3da72fa97ea8fec8d9ab7694d15a}{proto\+\_\+len}\hypertarget{anti__arpspoof_8cpp_a0bed3da72fa97ea8fec8d9ab7694d15a}{}\label{anti__arpspoof_8cpp_a0bed3da72fa97ea8fec8d9ab7694d15a}
+
+\begin{DoxyCompactList}\small\item\em A\+RP lenght in byte of protocol address. \end{DoxyCompactList}\item 
+uint16\+\_\+t \hyperlink{anti__arpspoof_8cpp_aeb39438c0aa5ad494c96060b00351545}{opcode}\hypertarget{anti__arpspoof_8cpp_aeb39438c0aa5ad494c96060b00351545}{}\label{anti__arpspoof_8cpp_aeb39438c0aa5ad494c96060b00351545}
+
+\begin{DoxyCompactList}\small\item\em A\+RP Operation code (0x0001 for request, 0x0002 for reply). \end{DoxyCompactList}\item 
+uint8\+\_\+t \hyperlink{anti__arpspoof_8cpp_a1677f85676b3673cb8cca803948b961e}{hw\+\_\+src} \mbox{[}\hyperlink{anti__arpspoof_8cpp_a60cf9af36f952be0feb59d1f49d5edff}{M\+A\+C\+\_\+\+A\+D\+D\+R\+\_\+\+L\+EN}\mbox{]}\hypertarget{anti__arpspoof_8cpp_a1677f85676b3673cb8cca803948b961e}{}\label{anti__arpspoof_8cpp_a1677f85676b3673cb8cca803948b961e}
+
+\begin{DoxyCompactList}\small\item\em A\+RP source HW address. \end{DoxyCompactList}\item 
+uint32\+\_\+t \hyperlink{anti__arpspoof_8cpp_a6c9afdafd270016666101c1e66f35259}{ip\+\_\+src}\hypertarget{anti__arpspoof_8cpp_a6c9afdafd270016666101c1e66f35259}{}\label{anti__arpspoof_8cpp_a6c9afdafd270016666101c1e66f35259}
+
+\begin{DoxyCompactList}\small\item\em A\+RP source Protocol address. \end{DoxyCompactList}\item 
+uint8\+\_\+t \hyperlink{anti__arpspoof_8cpp_ac3de0156d4669ba0c1e27b869f9c7385}{hw\+\_\+dst} \mbox{[}\hyperlink{anti__arpspoof_8cpp_a60cf9af36f952be0feb59d1f49d5edff}{M\+A\+C\+\_\+\+A\+D\+D\+R\+\_\+\+L\+EN}\mbox{]}\hypertarget{anti__arpspoof_8cpp_ac3de0156d4669ba0c1e27b869f9c7385}{}\label{anti__arpspoof_8cpp_ac3de0156d4669ba0c1e27b869f9c7385}
+
+\begin{DoxyCompactList}\small\item\em A\+RP target HW address. \end{DoxyCompactList}\item 
+uint32\+\_\+t \hyperlink{anti__arpspoof_8cpp_a01120dbf9755376f2002c904d6fe2e8b}{ip\+\_\+dst}\hypertarget{anti__arpspoof_8cpp_a01120dbf9755376f2002c904d6fe2e8b}{}\label{anti__arpspoof_8cpp_a01120dbf9755376f2002c904d6fe2e8b}
+
+\begin{DoxyCompactList}\small\item\em A\+RP target Protocol address. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\begin{DoxyAuthor}{Author}
+Ricardo Román \href{mailto:reroman4@gmail.com}{\tt reroman4@gmail.\+com}
+\end{DoxyAuthor}
+Tool to detect A\+RP spoofing 
+
+\subsection{Typedef Documentation}
+\index{anti\+\_\+arpspoof.\+cpp@{anti\+\_\+arpspoof.\+cpp}!A\+R\+P\+Table@{A\+R\+P\+Table}}
+\index{A\+R\+P\+Table@{A\+R\+P\+Table}!anti\+\_\+arpspoof.\+cpp@{anti\+\_\+arpspoof.\+cpp}}
+\subsubsection[{\texorpdfstring{A\+R\+P\+Table}{ARPTable}}]{\setlength{\rightskip}{0pt plus 5cm}typedef map$<$ {\bf H\+W\+Addr}, struct in\+\_\+addr$>$ {\bf A\+R\+P\+Table}}\hypertarget{anti__arpspoof_8cpp_ab5a8cfc7e0cab98b0d38facd150fa88f}{}\label{anti__arpspoof_8cpp_ab5a8cfc7e0cab98b0d38facd150fa88f}
+Represents a key-\/value table. 
+
+\subsection{Function Documentation}
+\index{anti\+\_\+arpspoof.\+cpp@{anti\+\_\+arpspoof.\+cpp}!add\+A\+R\+P\+Entry@{add\+A\+R\+P\+Entry}}
+\index{add\+A\+R\+P\+Entry@{add\+A\+R\+P\+Entry}!anti\+\_\+arpspoof.\+cpp@{anti\+\_\+arpspoof.\+cpp}}
+\subsubsection[{\texorpdfstring{add\+A\+R\+P\+Entry(const char $\ast$ifname, struct in\+\_\+addr ip, const H\+W\+Addr \&hw)}{addARPEntry(const char *ifname, struct in_addr ip, const HWAddr &hw)}}]{\setlength{\rightskip}{0pt plus 5cm}void add\+A\+R\+P\+Entry (
+\begin{DoxyParamCaption}
+\item[{const char $\ast$}]{ifname, }
+\item[{struct in\+\_\+addr}]{ip, }
+\item[{const {\bf H\+W\+Addr} \&}]{hw}
+\end{DoxyParamCaption}
+) throw  runtime\+\_\+error) }\hypertarget{anti__arpspoof_8cpp_a329365409847e3a90ddffd0e866e4a39}{}\label{anti__arpspoof_8cpp_a329365409847e3a90ddffd0e866e4a39}
+Adds a permanent entry to the A\+RP cache of the system.
+
+
+\begin{DoxyParams}{Parameters}
+{\em ifname} & Name of the network interface. \\
+\hline
+{\em ip} & IP Address v4 of the new arp entry. \\
+\hline
+{\em hw} & An \hyperlink{structHWAddr}{H\+W\+Addr} object that contains the info about the hardware address.\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em runtime\+\_\+error} & If the new entry couldn\textquotesingle{}t be added. \\
+\hline
+\end{DoxyExceptions}
+\index{anti\+\_\+arpspoof.\+cpp@{anti\+\_\+arpspoof.\+cpp}!guard@{guard}}
+\index{guard@{guard}!anti\+\_\+arpspoof.\+cpp@{anti\+\_\+arpspoof.\+cpp}}
+\subsubsection[{\texorpdfstring{guard(int sfd, const char $\ast$ifname, const A\+R\+P\+Table \&table)}{guard(int sfd, const char *ifname, const ARPTable &table)}}]{\setlength{\rightskip}{0pt plus 5cm}void guard (
+\begin{DoxyParamCaption}
+\item[{int}]{sfd, }
+\item[{const char $\ast$}]{ifname, }
+\item[{const {\bf A\+R\+P\+Table} \&}]{table}
+\end{DoxyParamCaption}
+)}\hypertarget{anti__arpspoof_8cpp_a187ab4e15f19947179159d8307dc68f6}{}\label{anti__arpspoof_8cpp_a187ab4e15f19947179159d8307dc68f6}
+An infinite bucle that analyzes new A\+RP replies. The bucle stops setting \hyperlink{anti__arpspoof_8cpp_a86f4ad84fe44506f4ac3d531f829ff78}{active} to false.
+
+
+\begin{DoxyParams}{Parameters}
+{\em sfd} & The A\+RP socket for receive A\+RP replies. \\
+\hline
+{\em ifname} & The name of the interface network. \\
+\hline
+{\em table} & The A\+R\+P\+Table that contains the A\+RP entries.\\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em runtime\+\_\+error} & If a request of add A\+RP entry failed. \\
+\hline
+\end{DoxyExceptions}
+\index{anti\+\_\+arpspoof.\+cpp@{anti\+\_\+arpspoof.\+cpp}!init\+Socket@{init\+Socket}}
+\index{init\+Socket@{init\+Socket}!anti\+\_\+arpspoof.\+cpp@{anti\+\_\+arpspoof.\+cpp}}
+\subsubsection[{\texorpdfstring{init\+Socket(int ifindex)}{initSocket(int ifindex)}}]{\setlength{\rightskip}{0pt plus 5cm}int init\+Socket (
+\begin{DoxyParamCaption}
+\item[{int}]{ifindex}
+\end{DoxyParamCaption}
+) throw  runtime\+\_\+error) }\hypertarget{anti__arpspoof_8cpp_a4fd3109d5d32adbc9741b550b0294d49}{}\label{anti__arpspoof_8cpp_a4fd3109d5d32adbc9741b550b0294d49}
+Creates a socket for A\+RP frames.
+
+
+\begin{DoxyParams}{Parameters}
+{\em ifindex} & The network interface index to bind the socket. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The socket descriptor.
+\end{DoxyReturn}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em runtime\+\_\+error} & If the socket couldn\textquotesingle{}t be opened (open raw sockets requires root provileges). \\
+\hline
+{\em runtime\+\_\+error} & The maximum time to wait for a response couldn\textquotesingle{}t be configured. \\
+\hline
+{\em runtime\+\_\+error} & socket could\textquotesingle{}t bind to the interface. \\
+\hline
+\end{DoxyExceptions}
+\index{anti\+\_\+arpspoof.\+cpp@{anti\+\_\+arpspoof.\+cpp}!load\+Local\+Data@{load\+Local\+Data}}
+\index{load\+Local\+Data@{load\+Local\+Data}!anti\+\_\+arpspoof.\+cpp@{anti\+\_\+arpspoof.\+cpp}}
+\subsubsection[{\texorpdfstring{load\+Local\+Data(const char $\ast$ifname)}{loadLocalData(const char *ifname)}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Local\+Data} load\+Local\+Data (
+\begin{DoxyParamCaption}
+\item[{const char $\ast$}]{ifname}
+\end{DoxyParamCaption}
+) throw  runtime\+\_\+error) }\hypertarget{anti__arpspoof_8cpp_aa5626403c6a9bdd9e4dc5a144e428a04}{}\label{anti__arpspoof_8cpp_aa5626403c6a9bdd9e4dc5a144e428a04}
+Get the local data of the netdevice given the interface name.
+
+
+\begin{DoxyParams}{Parameters}
+{\em ifname} & The name of the network interface \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A \hyperlink{structLocalData}{Local\+Data} object with the local information.
+\end{DoxyReturn}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em runtime\+\_\+error} & If some field couldn\textquotesingle{}t be acquired. \\
+\hline
+\end{DoxyExceptions}
+\index{anti\+\_\+arpspoof.\+cpp@{anti\+\_\+arpspoof.\+cpp}!main@{main}}
+\index{main@{main}!anti\+\_\+arpspoof.\+cpp@{anti\+\_\+arpspoof.\+cpp}}
+\subsubsection[{\texorpdfstring{main(int argc, char $\ast$$\ast$argv)}{main(int argc, char **argv)}}]{\setlength{\rightskip}{0pt plus 5cm}int main (
+\begin{DoxyParamCaption}
+\item[{int}]{argc, }
+\item[{char $\ast$$\ast$}]{argv}
+\end{DoxyParamCaption}
+)}\hypertarget{anti__arpspoof_8cpp_a3c04138a5bfe5d72780bb7e82a18e627}{}\label{anti__arpspoof_8cpp_a3c04138a5bfe5d72780bb7e82a18e627}
+Main function of the program.
+
+
+\begin{DoxyParams}{Parameters}
+{\em interface\+\_\+name} & The name of the network interface to use. \\
+\hline
+\end{DoxyParams}
+\index{anti\+\_\+arpspoof.\+cpp@{anti\+\_\+arpspoof.\+cpp}!scan@{scan}}
+\index{scan@{scan}!anti\+\_\+arpspoof.\+cpp@{anti\+\_\+arpspoof.\+cpp}}
+\subsubsection[{\texorpdfstring{scan(int sfd, const Local\+Data \&ld)}{scan(int sfd, const LocalData &ld)}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf A\+R\+P\+Table} scan (
+\begin{DoxyParamCaption}
+\item[{int}]{sfd, }
+\item[{const {\bf Local\+Data} \&}]{ld}
+\end{DoxyParamCaption}
+)}\hypertarget{anti__arpspoof_8cpp_a2d6d95490ff2aa1fbf3a1a1b5dbe2494}{}\label{anti__arpspoof_8cpp_a2d6d95490ff2aa1fbf3a1a1b5dbe2494}
+Makes a scan for A\+RP entries.
+
+
+\begin{DoxyParams}{Parameters}
+{\em sfd} & The A\+RP socket to send/receive A\+RP frames. \\
+\hline
+{\em ld} & An \hyperlink{structLocalData}{Local\+Data} object that contains the local info about the network interface.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A\+R\+P\+Table that contains the A\+RP entries in the network.
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+The last host is not included in the scan. 
+\end{DoxyNote}
+\begin{DoxySeeAlso}{See also}
+\hyperlink{anti__arpspoof_8cpp_a4fd3109d5d32adbc9741b550b0294d49}{init\+Socket()} 
+\end{DoxySeeAlso}
+\index{anti\+\_\+arpspoof.\+cpp@{anti\+\_\+arpspoof.\+cpp}!sig\+Kill@{sig\+Kill}}
+\index{sig\+Kill@{sig\+Kill}!anti\+\_\+arpspoof.\+cpp@{anti\+\_\+arpspoof.\+cpp}}
+\subsubsection[{\texorpdfstring{sig\+Kill(int)}{sigKill(int)}}]{\setlength{\rightskip}{0pt plus 5cm}void sig\+Kill (
+\begin{DoxyParamCaption}
+\item[{int}]{}
+\end{DoxyParamCaption}
+)}\hypertarget{anti__arpspoof_8cpp_a0ade92ac52186d55fad10cc54749baa3}{}\label{anti__arpspoof_8cpp_a0ade92ac52186d55fad10cc54749baa3}
+Kill signal handler. Change the value of \hyperlink{anti__arpspoof_8cpp_a86f4ad84fe44506f4ac3d531f829ff78}{active} to stop the execution of \hyperlink{anti__arpspoof_8cpp_a187ab4e15f19947179159d8307dc68f6}{guard()}. 
