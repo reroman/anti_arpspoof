@@ -323,7 +323,6 @@ ARPTable scan( int sfd, const LocalData &ld )
 	return table;
 }
 
-
 /**
  * An infinite bucle that analyzes new ARP replies.
  * The bucle stops setting ::active to false.
@@ -352,8 +351,8 @@ void guard( int sfd, const char *ifname, const ARPTable &table )
 				try{
 					struct in_addr reg = table.at(hw); // Check our ARP Table for the sender.
 
-					if( reg.s_addr != ip.s_addr ){ // If the MAC doesn't match with the IP
-						if( ignored.find(ip.s_addr) == ignored.end() ){ // ... And it's not ignored
+					if( reg.s_addr != ip.s_addr &&  // If the MAC doesn't match with the IP
+							ignored.find(ip.s_addr) == ignored.end() ){ // ... And it's not ignored
 							find = true;
 
 							// Notice to the user
@@ -381,7 +380,6 @@ void guard( int sfd, const char *ifname, const ARPTable &table )
 								cout << "There's a missing entry. Please run the tool again for a new scan." << endl;
 							ignored.insert( ip.s_addr );
 						} // End if for ignoring
-					} // End if for not matching IP
 				}
 				// The HW Address of the sender is not in our ARP Table
 				catch( out_of_range ){
