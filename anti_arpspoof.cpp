@@ -205,7 +205,7 @@ LocalData loadLocalData( const char *ifname ) throw( runtime_error )
  * @return The socket descriptor.
  *
  * @throw runtime_error If the socket couldn't be opened (open raw sockets requires
- * root provileges).
+ * root privileges).
  * @throw runtime_error  The maximum time to wait for a response couldn't be configured.
  * @throw runtime_error socket could't bind to the interface.
  */

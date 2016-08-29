@@ -17,10 +17,11 @@ body { font-family: monospace; color: #cccccc; background-color: #000000; }
 .Underlined { color: #80a0ff; text-decoration: underline; }
 .Statement { color: #ffff00; }
 .LineNr { color: #ffff00; }
-.Comment { color: #80a0ff; }
+.Folded { color: #00ffff; background-color: #a9a9a9; padding-bottom: 1px; }
 .Constant { color: #ffa0a0; }
 .Special { color: #ffa500; }
 .PreProc { color: #ff80ff; }
+.Comment { color: #80a0ff; }
 -->
 </style>
 
@@ -55,25 +56,9 @@ if ('onhashchange' in window) {
 </head>
 <body onload='JumpToLine();'>
 <pre id='vimCodeElement'>
-<span id="L1" class="LineNr">  1 </span><span class="Special">/**</span>
-<span id="L2" class="LineNr">  2 </span><span class="Special"> *</span><span class="Special"> </span><span class="Special">@</span><span class="Constant">file</span><span class="Statement">: anti_arpspoof.cpp</span>
-<span id="L3" class="LineNr">  3 </span><span class="Special"> *</span><span class="Special"> </span><span class="Special">@</span><span class="Special">author</span><span class="Statement"> Ricardo Román &lt;reroman4@gmail.com&gt;</span>
-<span id="L4" class="LineNr">  4 </span><span class="Special"> *</span><span class="Special"> </span>
-<span id="L5" class="LineNr">  5 </span><span class="Special"> *</span><span class="Special"> </span><span class="Statement">Tool to detect ARP spoofing</span>
-<span id="L6" class="LineNr">  6 </span><span class="Statement"> </span><span class="Special">*/</span>
+<span id="L1" class="Folded">  1 </span><span class="Folded">+--  6 líneas: *-------------------------------------------------------------------------------------------------------------------------------------------------------</span>
 <span id="L7" class="LineNr">  7 </span>
-<span id="L8" class="LineNr">  8 </span><span class="Comment">/*</span><span class="Comment"> </span>
-<span id="L9" class="LineNr">  9 </span><span class="Comment"> * Compilation:</span>
-<span id="L10" class="LineNr"> 10 </span><span class="Comment"> *  g++ -o anti_arpspoof anti_arpspoof.cpp -std=c++11</span>
-<span id="L11" class="LineNr"> 11 </span><span class="Comment"> * or</span>
-<span id="L12" class="LineNr"> 12 </span><span class="Comment"> *  make anti_arpspoof CXXFLAGS=-std=c++11  </span>
-<span id="L13" class="LineNr"> 13 </span><span class="Comment"> *</span>
-<span id="L14" class="LineNr"> 14 </span><span class="Comment"> *</span>
-<span id="L15" class="LineNr"> 15 </span><span class="Comment"> * This program is free software; you can redistribute it and/or modify</span>
-<span id="L16" class="LineNr"> 16 </span><span class="Comment"> * it under the terms of the GNU General Public License as published by</span>
-<span id="L17" class="LineNr"> 17 </span><span class="Comment"> * the Free Software Foundation; either version 2 of the License, or</span>
-<span id="L18" class="LineNr"> 18 </span><span class="Comment"> * (at your option) any later version.* </span>
-<span id="L19" class="LineNr"> 19 </span><span class="Comment"> </span><span class="Comment">*/</span>
+<span id="L8" class="Folded">  8 </span><span class="Folded">+-- 12 líneas: Compilation:--------------------------------------------------------------------------------------------------------------------------------------------</span>
 <span id="L20" class="LineNr"> 20 </span>
 <span id="L21" class="LineNr"> 21 </span><span class="PreProc">#include </span><span class="Constant">&lt;iostream&gt;</span>
 <span id="L22" class="LineNr"> 22 </span><span class="PreProc">#include </span><span class="Constant">&lt;iomanip&gt;</span>
@@ -124,136 +109,26 @@ if ('onhashchange' in window) {
 <span id="L67" class="LineNr"> 67 </span><span class="Comment">// Data types</span>
 <span id="L68" class="LineNr"> 68 </span><span class="Comment">// ===============================</span>
 <span id="L69" class="LineNr"> 69 </span>
-<span id="L70" class="LineNr"> 70 </span><span class="Special">/**</span>
-<span id="L71" class="LineNr"> 71 </span><span class="Special"> *</span><span class="Special"> </span><span class="Statement">Stores a MAC Address</span>
-<span id="L72" class="LineNr"> 72 </span><span class="Statement"> </span><span class="Special">*/</span>
-<span id="L73" class="LineNr"> 73 </span><span class="Type">struct</span> HWAddr{
-<span id="L74" class="LineNr"> 74 </span>    <span class="Type">uint8_t</span> hw[MAC_ADDR_LEN];
-<span id="L75" class="LineNr"> 75 </span>
-<span id="L76" class="LineNr"> 76 </span>    <span class="Special">/**</span>
-<span id="L77" class="LineNr"> 77 </span><span class="Special">     *</span><span class="Special"> </span><span class="Statement">Creates an HWAddr object from an array of bytes with length size of 6.</span>
-<span id="L78" class="LineNr"> 78 </span><span class="Special">     *</span>
-<span id="L79" class="LineNr"> 79 </span><span class="Special">     * </span><span class="Special">@</span><span class="Special">param</span><span class="Comment"> </span><span class="Underlined">m</span><span class="Statement"> The array with the 6 bytes of the HW Address.</span>
-<span id="L80" class="LineNr"> 80 </span><span class="Comment">     </span><span class="Special">*/</span>
-<span id="L81" class="LineNr"> 81 </span>    HWAddr( <span class="Type">const</span> <span class="Type">uint8_t</span> m[] ){
-<span id="L82" class="LineNr"> 82 </span>        memcpy( hw, m, MAC_ADDR_LEN );
-<span id="L83" class="LineNr"> 83 </span>    }
-<span id="L84" class="LineNr"> 84 </span>
-<span id="L85" class="LineNr"> 85 </span>    <span class="Type">bool</span> <span class="Statement">operator</span> &lt; ( <span class="Type">const</span> HWAddr &amp;m ) <span class="Type">const</span> {
-<span id="L86" class="LineNr"> 86 </span>        <span class="Statement">return</span> memcmp( hw, m.hw, MAC_ADDR_LEN ) &lt; <span class="Constant">0</span>;
-<span id="L87" class="LineNr"> 87 </span>    }
-<span id="L88" class="LineNr"> 88 </span>
-<span id="L89" class="LineNr"> 89 </span>    <span class="Special">/**</span>
-<span id="L90" class="LineNr"> 90 </span><span class="Special">     *</span><span class="Special"> </span><span class="Statement">Get a string representation of the HW Address in</span>
-<span id="L91" class="LineNr"> 91 </span><span class="Special">     * </span><span class="Statement">the format xx:xx:xx:xx:xx:xx.</span>
-<span id="L92" class="LineNr"> 92 </span><span class="Special">     *</span>
-<span id="L93" class="LineNr"> 93 </span><span class="Special">     * </span><span class="Special">@</span><span class="Special">return</span><span class="Statement"> The string representation of the HW Address.</span>
-<span id="L94" class="LineNr"> 94 </span><span class="Comment">     </span><span class="Special">*/</span>
-<span id="L95" class="LineNr"> 95 </span>    string toString() <span class="Type">const</span> {
-<span id="L96" class="LineNr"> 96 </span>        ostringstream out;
-<span id="L97" class="LineNr"> 97 </span>
-<span id="L98" class="LineNr"> 98 </span>        out &lt;&lt; hex &lt;&lt; setfill( <span class="Constant">'0'</span> ) &lt;&lt; setw( <span class="Constant">2</span> );
-<span id="L99" class="LineNr"> 99 </span>        <span class="Statement">for</span>( <span class="Type">int</span> i = <span class="Constant">0</span> ; i &lt; MAC_ADDR_LEN ; ){
-<span id="L100" class="LineNr">100 </span>            out &lt;&lt; <span class="Statement">static_cast</span>&lt;<span class="Type">int</span>&gt;( hw[i] );
-<span id="L101" class="LineNr">101 </span>            <span class="Statement">if</span>( hw[i] == <span class="Constant">0</span> )
-<span id="L102" class="LineNr">102 </span>                out &lt;&lt; <span class="Constant">0</span>;
-<span id="L103" class="LineNr">103 </span>            <span class="Statement">if</span>( ++i != MAC_ADDR_LEN )
-<span id="L104" class="LineNr">104 </span>                out &lt;&lt; <span class="Constant">':'</span>;
-<span id="L105" class="LineNr">105 </span>        }
-<span id="L106" class="LineNr">106 </span>        <span class="Statement">return</span> out.str();
-<span id="L107" class="LineNr">107 </span>    }
-<span id="L108" class="LineNr">108 </span>
-<span id="L109" class="LineNr">109 </span>};
+<span id="L70" class="Folded"> 70 </span><span class="Folded">+--  3 líneas: *-------------------------------------------------------------------------------------------------------------------------------------------------------</span>
+<span id="L73" class="Folded"> 73 </span><span class="Folded">+-- 37 líneas: struct HWAddr{------------------------------------------------------------------------------------------------------------------------------------------</span>
 <span id="L110" class="LineNr">110 </span>
-<span id="L111" class="LineNr">111 </span><span class="Special">/**</span>
-<span id="L112" class="LineNr">112 </span><span class="Special"> *</span><span class="Special"> </span><span class="Statement">The representation of a ARP Frame including the </span>
-<span id="L113" class="LineNr">113 </span><span class="Special"> * </span><span class="Statement">ethernet header.</span>
-<span id="L114" class="LineNr">114 </span><span class="Comment"> </span><span class="Special">*/</span>
-<span id="L115" class="LineNr">115 </span><span class="Type">struct</span> ARPFrame{
-<span id="L116" class="LineNr">116 </span>    <span class="Type">uint8_t</span>     eth_dst[MAC_ADDR_LEN];  <span class="Special">///</span><span class="Special">&lt;</span><span class="Special"> </span><span class="Statement">Ethernet destination address.</span>
-<span id="L117" class="LineNr">117 </span>    <span class="Type">uint8_t</span>     eth_src[MAC_ADDR_LEN];  <span class="Special">///</span><span class="Special">&lt;</span><span class="Special"> </span><span class="Statement">Ethernet source address.</span>
-<span id="L118" class="LineNr">118 </span>    <span class="Type">uint16_t</span>    eth_ethertype;          <span class="Special">///</span><span class="Special">&lt;</span><span class="Special"> </span><span class="Statement">Eheternet ethertype.</span>
-<span id="L119" class="LineNr">119 </span>    <span class="Type">uint16_t</span>    hw_type;                <span class="Special">///</span><span class="Special">&lt;</span><span class="Special"> </span><span class="Statement">ARP hardware type (Ethernet 0x0001).</span>
-<span id="L120" class="LineNr">120 </span>    <span class="Type">uint16_t</span>    protocol;               <span class="Special">///</span><span class="Special">&lt;</span><span class="Special"> </span><span class="Statement">ARP protocol (IP 0x0800).</span>
-<span id="L121" class="LineNr">121 </span>    <span class="Type">uint8_t</span>     hw_len;                 <span class="Special">///</span><span class="Special">&lt;</span><span class="Special"> </span><span class="Statement">ARP lenght in bytes of hardware address.</span>
-<span id="L122" class="LineNr">122 </span>    <span class="Type">uint8_t</span>     proto_len;              <span class="Special">///</span><span class="Special">&lt;</span><span class="Special"> </span><span class="Statement">ARP lenght in byte of protocol address.</span>
-<span id="L123" class="LineNr">123 </span>    <span class="Type">uint16_t</span>    opcode;                 <span class="Special">///</span><span class="Special">&lt;</span><span class="Special"> </span><span class="Statement">ARP Operation code (0x0001 for request, 0x0002 for reply).</span>
-<span id="L124" class="LineNr">124 </span>    <span class="Type">uint8_t</span>     hw_src[MAC_ADDR_LEN];   <span class="Special">///</span><span class="Special">&lt;</span><span class="Special"> </span><span class="Statement">ARP source HW address.</span>
-<span id="L125" class="LineNr">125 </span>    <span class="Type">uint32_t</span>    ip_src;                 <span class="Special">///</span><span class="Special">&lt;</span><span class="Special"> </span><span class="Statement">ARP source Protocol address.</span>
-<span id="L126" class="LineNr">126 </span>    <span class="Type">uint8_t</span>     hw_dst[MAC_ADDR_LEN];   <span class="Special">///</span><span class="Special">&lt;</span><span class="Special"> </span><span class="Statement">ARP target HW address.</span>
-<span id="L127" class="LineNr">127 </span>    <span class="Type">uint32_t</span>    ip_dst;                 <span class="Special">///</span><span class="Special">&lt;</span><span class="Special"> </span><span class="Statement">ARP target Protocol address.</span>
-<span id="L128" class="LineNr">128 </span>} __attribute__((__packed__));
+<span id="L111" class="Folded">111 </span><span class="Folded">+--  4 líneas: *-------------------------------------------------------------------------------------------------------------------------------------------------------</span>
+<span id="L115" class="Folded">115 </span><span class="Folded">+-- 14 líneas: struct ARPFrame{----------------------------------------------------------------------------------------------------------------------------------------</span>
 <span id="L129" class="LineNr">129 </span>
 <span id="L130" class="LineNr">130 </span><span class="Special">/**</span><span class="Special"> </span><span class="Statement">Represents a key-value table.</span><span class="Special">*/</span>
 <span id="L131" class="LineNr">131 </span><span class="Type">typedef</span> map&lt; HWAddr, <span class="Type">struct</span> in_addr&gt; ARPTable;
 <span id="L132" class="LineNr">132 </span>
 <span id="L133" class="LineNr">133 </span><span class="Special">/**</span><span class="Special"> </span><span class="Statement">Stores some info about the netdevice </span><span class="Special">*/</span>
-<span id="L134" class="LineNr">134 </span><span class="Type">struct</span> LocalData{
-<span id="L135" class="LineNr">135 </span>    <span class="Type">int</span> ifindex;                    <span class="Special">///</span><span class="Special">&lt;</span><span class="Special"> </span><span class="Statement">Index of the network interface.</span>
-<span id="L136" class="LineNr">136 </span>    <span class="Type">uint32_t</span> ipAddr;                <span class="Special">///</span><span class="Special">&lt;</span><span class="Special"> </span><span class="Statement">IP Address of the network interface.</span>
-<span id="L137" class="LineNr">137 </span>    <span class="Type">uint32_t</span> firstHost;             <span class="Special">///</span><span class="Special">&lt;</span><span class="Special"> </span><span class="Statement">IP Address of the first host in the network.</span>
-<span id="L138" class="LineNr">138 </span>    <span class="Type">uint32_t</span> lastHost;              <span class="Special">///</span><span class="Special">&lt;</span><span class="Special"> </span><span class="Statement">IP Address of the last host in the network.</span>
-<span id="L139" class="LineNr">139 </span>    <span class="Type">uint8_t</span> hwAddr[MAC_ADDR_LEN];   <span class="Special">///</span><span class="Special">&lt;</span><span class="Special"> </span><span class="Statement">Hawrdware Address of the network interface.</span>
-<span id="L140" class="LineNr">140 </span>};
+<span id="L134" class="Folded">134 </span><span class="Folded">+--  7 líneas: struct LocalData{---------------------------------------------------------------------------------------------------------------------------------------</span>
 <span id="L141" class="LineNr">141 </span>
 <span id="L142" class="LineNr">142 </span>
 <span id="L143" class="LineNr">143 </span><span class="Comment">// ===============================</span>
 <span id="L144" class="LineNr">144 </span><span class="Comment">// Functions</span>
 <span id="L145" class="LineNr">145 </span><span class="Comment">// ===============================</span>
 <span id="L146" class="LineNr">146 </span>
-<span id="L147" class="LineNr">147 </span><span class="Special">/**</span>
-<span id="L148" class="LineNr">148 </span><span class="Special"> *</span><span class="Special"> </span><span class="Statement">Get the local data of the netdevice given</span>
-<span id="L149" class="LineNr">149 </span><span class="Special"> * </span><span class="Statement">the interface name.</span>
-<span id="L150" class="LineNr">150 </span><span class="Special"> *</span>
-<span id="L151" class="LineNr">151 </span><span class="Special"> * </span><span class="Special">@</span><span class="Special">param</span><span class="Comment"> </span><span class="Underlined">ifname</span><span class="Statement"> The name of the network interface</span>
-<span id="L152" class="LineNr">152 </span><span class="Special"> * </span><span class="Special">@</span><span class="Special">return</span><span class="Statement"> A LocalData object with the local information.</span>
-<span id="L153" class="LineNr">153 </span><span class="Special"> *</span>
-<span id="L154" class="LineNr">154 </span><span class="Special"> * </span><span class="Special">@</span><span class="Special">throw</span><span class="Comment"> </span><span class="Underlined">runtime_error</span><span class="Statement"> If some field couldn't be acquired.</span>
-<span id="L155" class="LineNr">155 </span><span class="Comment"> </span><span class="Special">*/</span>
+<span id="L147" class="Folded">147 </span><span class="Folded">+--  9 líneas: *-------------------------------------------------------------------------------------------------------------------------------------------------------</span>
 <span id="L156" class="LineNr">156 </span>LocalData loadLocalData( <span class="Type">const</span> <span class="Type">char</span> *ifname ) <span class="Statement">throw</span>( runtime_error )
-<span id="L157" class="LineNr">157 </span>{
-<span id="L158" class="LineNr">158 </span>    <span class="Type">struct</span> ifreq nic;
-<span id="L159" class="LineNr">159 </span>    <span class="Type">int</span> sock = socket( AF_INET, SOCK_STREAM, <span class="Constant">0</span> );
-<span id="L160" class="LineNr">160 </span>    LocalData data;
-<span id="L161" class="LineNr">161 </span>
-<span id="L162" class="LineNr">162 </span>    strncpy( nic.ifr_name, ifname, IFNAMSIZ-<span class="Constant">1</span> );
-<span id="L163" class="LineNr">163 </span>    nic.ifr_name[IFNAMSIZ-<span class="Constant">1</span>] = <span class="Special">'\0'</span>;
-<span id="L164" class="LineNr">164 </span>
-<span id="L165" class="LineNr">165 </span>    <span class="Comment">// Index</span>
-<span id="L166" class="LineNr">166 </span>    <span class="Statement">if</span>( ioctl( sock, SIOCGIFINDEX, &amp;nic ) &lt; <span class="Constant">0</span> ){
-<span id="L167" class="LineNr">167 </span>        close( sock );
-<span id="L168" class="LineNr">168 </span>        <span class="Statement">throw</span> runtime_error( string(ifname) + <span class="Constant">&quot;: &quot;</span> + string(strerror(errno)) );
-<span id="L169" class="LineNr">169 </span>    }
-<span id="L170" class="LineNr">170 </span>    data.ifindex = nic.ifr_ifindex;
-<span id="L171" class="LineNr">171 </span>
-<span id="L172" class="LineNr">172 </span>    <span class="Comment">// IP Address</span>
-<span id="L173" class="LineNr">173 </span>    <span class="Statement">if</span>( ioctl( sock, SIOCGIFADDR, &amp;nic ) &lt; <span class="Constant">0</span> ){
-<span id="L174" class="LineNr">174 </span>        close( sock );
-<span id="L175" class="LineNr">175 </span>        <span class="Statement">throw</span> runtime_error( <span class="Constant">&quot;Getting IP Address: &quot;</span> + string(strerror(errno)) );
-<span id="L176" class="LineNr">176 </span>    }
-<span id="L177" class="LineNr">177 </span>    memcpy( &amp;data.ipAddr, nic.ifr_addr.sa_data + <span class="Constant">2</span>, IP_ADDR_LEN );
-<span id="L178" class="LineNr">178 </span>
-<span id="L179" class="LineNr">179 </span>    <span class="Comment">// Hw Address</span>
-<span id="L180" class="LineNr">180 </span>    <span class="Statement">if</span>( ioctl( sock, SIOCGIFHWADDR, &amp;nic ) &lt; <span class="Constant">0</span> ){
-<span id="L181" class="LineNr">181 </span>        close( sock );
-<span id="L182" class="LineNr">182 </span>        <span class="Statement">throw</span> runtime_error( <span class="Constant">&quot;Getting HW Address: &quot;</span> + string(strerror(errno)) );
-<span id="L183" class="LineNr">183 </span>    }
-<span id="L184" class="LineNr">184 </span>    memcpy( data.hwAddr, nic.ifr_netmask.sa_data, MAC_ADDR_LEN );
-<span id="L185" class="LineNr">185 </span>
-<span id="L186" class="LineNr">186 </span>    <span class="Comment">// Broadcast for last host</span>
-<span id="L187" class="LineNr">187 </span>    <span class="Statement">if</span>( ioctl( sock, SIOCGIFBRDADDR, &amp;nic ) &lt; <span class="Constant">0</span> ){
-<span id="L188" class="LineNr">188 </span>        close( sock );
-<span id="L189" class="LineNr">189 </span>        <span class="Statement">throw</span> runtime_error( <span class="Constant">&quot;Getting Broadcast: &quot;</span> + string(strerror(errno)) );
-<span id="L190" class="LineNr">190 </span>    }
-<span id="L191" class="LineNr">191 </span>    memcpy( &amp;data.lastHost, nic.ifr_broadaddr.sa_data + <span class="Constant">2</span>, IP_ADDR_LEN );
-<span id="L192" class="LineNr">192 </span>
-<span id="L193" class="LineNr">193 </span>    <span class="Comment">// First host from the network IP</span>
-<span id="L194" class="LineNr">194 </span>    <span class="Type">struct</span> in_addr aux = { data.ipAddr };
-<span id="L195" class="LineNr">195 </span>    data.firstHost = inet_netof( aux );
-<span id="L196" class="LineNr">196 </span>    data.firstHost = (htonl( data.firstHost ) &gt;&gt; <span class="Constant">8</span>) + IP_ONE;
-<span id="L197" class="LineNr">197 </span>
-<span id="L198" class="LineNr">198 </span>    <span class="Statement">return</span> data;
-<span id="L199" class="LineNr">199 </span>}
+<span id="L157" class="Folded">157 </span><span class="Folded">+-- 43 líneas: {-------------------------------------------------------------------------------------------------------------------------------------------------------</span>
 <span id="L200" class="LineNr">200 </span>
 <span id="L201" class="LineNr">201 </span><span class="Special">/**</span>
 <span id="L202" class="LineNr">202 </span><span class="Special"> *</span><span class="Special"> </span><span class="Statement">Creates a socket for ARP frames.</span>
@@ -262,242 +137,32 @@ if ('onhashchange' in window) {
 <span id="L205" class="LineNr">205 </span><span class="Special"> * </span><span class="Special">@</span><span class="Special">return</span><span class="Statement"> The socket descriptor.</span>
 <span id="L206" class="LineNr">206 </span><span class="Special"> *</span>
 <span id="L207" class="LineNr">207 </span><span class="Special"> * </span><span class="Special">@</span><span class="Special">throw</span><span class="Comment"> </span><span class="Underlined">runtime_error</span><span class="Statement"> If the socket couldn't be opened (open raw sockets requires</span>
-<span id="L208" class="LineNr">208 </span><span class="Special"> * </span><span class="Statement">root provileges).</span>
+<span id="L208" class="LineNr">208 </span><span class="Special"> * </span><span class="Statement">root privileges).</span>
 <span id="L209" class="LineNr">209 </span><span class="Special"> * </span><span class="Special">@</span><span class="Special">throw</span><span class="Comment"> </span><span class="Underlined">runtime_error</span><span class="Statement">  The maximum time to wait for a response couldn't be configured.</span>
 <span id="L210" class="LineNr">210 </span><span class="Special"> * </span><span class="Special">@</span><span class="Special">throw</span><span class="Comment"> </span><span class="Underlined">runtime_error</span><span class="Statement"> socket could't bind to the interface.</span>
 <span id="L211" class="LineNr">211 </span><span class="Comment"> </span><span class="Special">*/</span>
 <span id="L212" class="LineNr">212 </span><span class="Type">int</span> initSocket( <span class="Type">int</span> ifindex ) <span class="Statement">throw</span>( runtime_error )
-<span id="L213" class="LineNr">213 </span>{
-<span id="L214" class="LineNr">214 </span>    <span class="Type">int</span> sockfd;
-<span id="L215" class="LineNr">215 </span>    <span class="Type">struct</span> sockaddr_ll sll;
-<span id="L216" class="LineNr">216 </span>    <span class="Type">struct</span> timeval timer;
-<span id="L217" class="LineNr">217 </span>
-<span id="L218" class="LineNr">218 </span>    <span class="Statement">if</span>( (sockfd = socket( AF_PACKET, SOCK_RAW, htons(ETH_P_ARP) )) &lt; <span class="Constant">0</span> )
-<span id="L219" class="LineNr">219 </span>        <span class="Statement">throw</span> runtime_error( <span class="Constant">&quot;socket: &quot;</span> + string(strerror(errno)) );
-<span id="L220" class="LineNr">220 </span>
-<span id="L221" class="LineNr">221 </span>    timer.tv_sec = <span class="Constant">0</span>;
-<span id="L222" class="LineNr">222 </span>    timer.tv_usec = <span class="Constant">100000</span>;
-<span id="L223" class="LineNr">223 </span>    <span class="Statement">if</span>( setsockopt( sockfd, SOL_SOCKET, SO_RCVTIMEO, &amp;timer, <span class="Statement">sizeof</span>(timer) ) &lt; <span class="Constant">0</span> )
-<span id="L224" class="LineNr">224 </span>        <span class="Statement">throw</span> runtime_error( strerror(errno) );
-<span id="L225" class="LineNr">225 </span>
-<span id="L226" class="LineNr">226 </span>    memset( &amp;sll, <span class="Constant">0</span>, <span class="Statement">sizeof</span>(sll) );
-<span id="L227" class="LineNr">227 </span>    sll.sll_family = AF_PACKET;
-<span id="L228" class="LineNr">228 </span>    sll.sll_ifindex = ifindex;
-<span id="L229" class="LineNr">229 </span>    sll.sll_protocol = htons( ETH_P_ARP );
-<span id="L230" class="LineNr">230 </span>
-<span id="L231" class="LineNr">231 </span>    <span class="Statement">if</span>( bind( sockfd, (<span class="Type">struct</span> sockaddr*) &amp;sll, <span class="Statement">sizeof</span>(sll) ) &lt; <span class="Constant">0</span> )
-<span id="L232" class="LineNr">232 </span>        <span class="Statement">throw</span> runtime_error( strerror(errno) );
-<span id="L233" class="LineNr">233 </span>
-<span id="L234" class="LineNr">234 </span>    <span class="Statement">return</span> sockfd;
-<span id="L235" class="LineNr">235 </span>}
+<span id="L213" class="Folded">213 </span><span class="Folded">+-- 23 líneas: {-------------------------------------------------------------------------------------------------------------------------------------------------------</span>
 <span id="L236" class="LineNr">236 </span>
-<span id="L237" class="LineNr">237 </span><span class="Special">/**</span>
-<span id="L238" class="LineNr">238 </span><span class="Special"> *</span><span class="Special"> </span><span class="Statement">Adds a permanent entry to the ARP cache of the system.</span>
-<span id="L239" class="LineNr">239 </span><span class="Special"> *</span>
-<span id="L240" class="LineNr">240 </span><span class="Special"> * </span><span class="Special">@</span><span class="Special">param</span><span class="Comment"> </span><span class="Underlined">ifname</span><span class="Statement"> Name of the network interface.</span>
-<span id="L241" class="LineNr">241 </span><span class="Special"> * </span><span class="Special">@</span><span class="Special">param</span><span class="Comment"> </span><span class="Underlined">ip</span><span class="Statement"> IP Address v4 of the new arp entry.</span>
-<span id="L242" class="LineNr">242 </span><span class="Special"> * </span><span class="Special">@</span><span class="Special">param</span><span class="Comment"> </span><span class="Underlined">hw</span><span class="Statement"> An HWAddr object that contains the info about the hardware address.</span>
-<span id="L243" class="LineNr">243 </span><span class="Special"> *</span>
-<span id="L244" class="LineNr">244 </span><span class="Special"> * </span><span class="Special">@</span><span class="Special">throw</span><span class="Comment"> </span><span class="Underlined">runtime_error</span><span class="Statement"> If the new entry couldn't be added.</span>
-<span id="L245" class="LineNr">245 </span><span class="Special"> * </span><span class="Special">*/</span>
+<span id="L237" class="Folded">237 </span><span class="Folded">+--  9 líneas: *-------------------------------------------------------------------------------------------------------------------------------------------------------</span>
 <span id="L246" class="LineNr">246 </span><span class="Type">void</span> addARPEntry(<span class="Type">const</span> <span class="Type">char</span> *ifname, <span class="Type">struct</span> in_addr ip, <span class="Type">const</span> HWAddr &amp;hw)
 <span id="L247" class="LineNr">247 </span>    <span class="Statement">throw</span>( runtime_error )
-<span id="L248" class="LineNr">248 </span>{
-<span id="L249" class="LineNr">249 </span>    <span class="Type">struct</span> arpreq arp;
-<span id="L250" class="LineNr">250 </span>    <span class="Type">int</span> sock = socket( AF_INET, SOCK_DGRAM, <span class="Constant">0</span> );
-<span id="L251" class="LineNr">251 </span>
-<span id="L252" class="LineNr">252 </span>    arp.arp_pa.sa_family = AF_INET;
-<span id="L253" class="LineNr">253 </span>    memcpy( arp.arp_pa.sa_data + <span class="Constant">2</span>, &amp;ip.s_addr, IP_ADDR_LEN );
-<span id="L254" class="LineNr">254 </span>    arp.arp_ha.sa_family = ARPHRD_ETHER;
-<span id="L255" class="LineNr">255 </span>    memcpy( arp.arp_ha.sa_data, hw.hw, MAC_ADDR_LEN );
-<span id="L256" class="LineNr">256 </span>    strncpy( arp.arp_dev, ifname, IFNAMSIZ - <span class="Constant">1</span> );
-<span id="L257" class="LineNr">257 </span>    arp.arp_dev[IFNAMSIZ - <span class="Constant">1</span>] = <span class="Special">'\0'</span>;
-<span id="L258" class="LineNr">258 </span>    arp.arp_flags = ATF_COM | ATF_PERM;
-<span id="L259" class="LineNr">259 </span>
-<span id="L260" class="LineNr">260 </span>    <span class="Statement">if</span>( ioctl( sock, SIOCSARP, &amp;arp ) == -<span class="Constant">1</span> ){
-<span id="L261" class="LineNr">261 </span>        close( sock );
-<span id="L262" class="LineNr">262 </span>        <span class="Statement">throw</span> runtime_error( <span class="Constant">&quot;Add ARP entry: &quot;</span> + string(strerror(errno)) );
-<span id="L263" class="LineNr">263 </span>    }
-<span id="L264" class="LineNr">264 </span>    close( sock );
-<span id="L265" class="LineNr">265 </span>}
+<span id="L248" class="Folded">248 </span><span class="Folded">+-- 18 líneas: {-------------------------------------------------------------------------------------------------------------------------------------------------------</span>
 <span id="L266" class="LineNr">266 </span>
-<span id="L267" class="LineNr">267 </span><span class="Special">/**</span>
-<span id="L268" class="LineNr">268 </span><span class="Special"> *</span><span class="Special"> </span><span class="Statement">Makes a scan for ARP entries.</span>
-<span id="L269" class="LineNr">269 </span><span class="Special"> *</span>
-<span id="L270" class="LineNr">270 </span><span class="Special"> * </span><span class="Special">@</span><span class="Special">param</span><span class="Comment"> </span><span class="Underlined">sfd</span><span class="Statement"> The ARP socket to send/receive ARP frames.</span>
-<span id="L271" class="LineNr">271 </span><span class="Special"> * </span><span class="Special">@</span><span class="Special">param</span><span class="Comment"> </span><span class="Underlined">ld</span><span class="Statement"> An LocalData object that contains the local info about the</span>
-<span id="L272" class="LineNr">272 </span><span class="Special"> * </span><span class="Statement">network interface.</span>
-<span id="L273" class="LineNr">273 </span><span class="Special"> *</span>
-<span id="L274" class="LineNr">274 </span><span class="Special"> * </span><span class="Special">@</span><span class="Special">return</span><span class="Statement"> ARPTable that contains the ARP entries in the network.</span>
-<span id="L275" class="LineNr">275 </span><span class="Special"> *</span>
-<span id="L276" class="LineNr">276 </span><span class="Special"> * </span><span class="Special">@</span><span class="Special">note</span><span class="Statement"> The last host is not included in the scan.</span>
-<span id="L277" class="LineNr">277 </span><span class="Special"> * </span><span class="Special">@</span><span class="Special">see</span><span class="Statement"> initSocket()</span>
-<span id="L278" class="LineNr">278 </span><span class="Comment"> </span><span class="Special">*/</span>
+<span id="L267" class="Folded">267 </span><span class="Folded">+-- 12 líneas: *-------------------------------------------------------------------------------------------------------------------------------------------------------</span>
 <span id="L279" class="LineNr">279 </span>ARPTable scan( <span class="Type">int</span> sfd, <span class="Type">const</span> LocalData &amp;ld )
-<span id="L280" class="LineNr">280 </span>{
-<span id="L281" class="LineNr">281 </span>    <span class="Type">struct</span> in_addr host;
-<span id="L282" class="LineNr">282 </span>    ARPTable table;
-<span id="L283" class="LineNr">283 </span>    ARPFrame request, reply;
-<span id="L284" class="LineNr">284 </span>    <span class="Type">int</span> attempts;
-<span id="L285" class="LineNr">285 </span>
-<span id="L286" class="LineNr">286 </span>    <span class="Comment">// Setting constant values of the request</span>
-<span id="L287" class="LineNr">287 </span>    memset( request.eth_dst, <span class="Constant">0xff</span>, MAC_ADDR_LEN );
-<span id="L288" class="LineNr">288 </span>    memcpy( request.eth_src, ld.hwAddr, MAC_ADDR_LEN );
-<span id="L289" class="LineNr">289 </span>    request.eth_ethertype = htons( ETH_P_ARP );
-<span id="L290" class="LineNr">290 </span>    request.hw_type = htons( ARPHRD_ETHER );
-<span id="L291" class="LineNr">291 </span>    request.protocol = htons( ETH_P_IP );
-<span id="L292" class="LineNr">292 </span>    request.hw_len = MAC_ADDR_LEN;
-<span id="L293" class="LineNr">293 </span>    request.proto_len = IP_ADDR_LEN;
-<span id="L294" class="LineNr">294 </span>    request.opcode = htons(ARPOP_REQUEST);
-<span id="L295" class="LineNr">295 </span>    memcpy( request.hw_src, ld.hwAddr, MAC_ADDR_LEN );
-<span id="L296" class="LineNr">296 </span>    request.ip_src = ld.ipAddr;
-<span id="L297" class="LineNr">297 </span>    memset( request.hw_dst, <span class="Constant">0</span>, MAC_ADDR_LEN );
-<span id="L298" class="LineNr">298 </span>
-<span id="L299" class="LineNr">299 </span>    <span class="Comment">// Bucle for hosts</span>
-<span id="L300" class="LineNr">300 </span>    <span class="Statement">for</span>( host.s_addr = ld.firstHost ; host.s_addr != ld.lastHost ; host.s_addr += IP_ONE ){
-<span id="L301" class="LineNr">301 </span>        request.ip_dst = host.s_addr;
-<span id="L302" class="LineNr">302 </span>        attempts = MAX_TRIES_FOR_RESOLV;
-<span id="L303" class="LineNr">303 </span>        cout &lt;&lt; <span class="Constant">&quot;Resolving &quot;</span> &lt;&lt; inet_ntoa( host ) &lt;&lt; <span class="Special">'\r'</span>;
-<span id="L304" class="LineNr">304 </span>        cout.flush();
-<span id="L305" class="LineNr">305 </span>        write( sfd, &amp;request, <span class="Statement">sizeof</span>(request) ); <span class="Comment">// Send the request.</span>
-<span id="L306" class="LineNr">306 </span>        <span class="Statement">do</span>{
-<span id="L307" class="LineNr">307 </span>            <span class="Statement">if</span>( read( sfd, &amp;reply, <span class="Statement">sizeof</span>(reply) ) &gt; <span class="Constant">0</span> ){ <span class="Comment">// Receive the reply</span>
-<span id="L308" class="LineNr">308 </span>                <span class="Comment">// Verify the reply and sender.</span>
-<span id="L309" class="LineNr">309 </span>                <span class="Statement">if</span>( ntohs(reply.opcode) == ARPOP_REPLY &amp;&amp; reply.ip_src == host.s_addr ){
-<span id="L310" class="LineNr">310 </span>                    HWAddr hw( reply.hw_src );
-<span id="L311" class="LineNr">311 </span>                    <span class="Type">struct</span> in_addr aux = { reply.ip_src };
-<span id="L312" class="LineNr">312 </span>                    table[hw] = aux;
-<span id="L313" class="LineNr">313 </span>                    attempts = <span class="Constant">0</span>;
-<span id="L314" class="LineNr">314 </span>                }
-<span id="L315" class="LineNr">315 </span>                <span class="Statement">else</span> <span class="Comment">// Not the answer what we want.</span>
-<span id="L316" class="LineNr">316 </span>                    attempts--;
-<span id="L317" class="LineNr">317 </span>            }
-<span id="L318" class="LineNr">318 </span>            <span class="Statement">else</span> <span class="Comment">// Some error or no response.</span>
-<span id="L319" class="LineNr">319 </span>                attempts = <span class="Constant">0</span>;
-<span id="L320" class="LineNr">320 </span>        }<span class="Statement">while</span>( attempts );
-<span id="L321" class="LineNr">321 </span>    }
-<span id="L322" class="LineNr">322 </span>    cout &lt;&lt; endl;
-<span id="L323" class="LineNr">323 </span>    <span class="Statement">return</span> table;
-<span id="L324" class="LineNr">324 </span>}
+<span id="L280" class="Folded">280 </span><span class="Folded">+-- 45 líneas: {-------------------------------------------------------------------------------------------------------------------------------------------------------</span>
 <span id="L325" class="LineNr">325 </span>
-<span id="L326" class="LineNr">326 </span><span class="Special">/**</span>
-<span id="L327" class="LineNr">327 </span><span class="Special"> *</span><span class="Special"> </span><span class="Statement">An infinite bucle that analyzes new ARP replies.</span>
-<span id="L328" class="LineNr">328 </span><span class="Special"> * </span><span class="Comment">The bucle stops setting ::active to false.</span>
-<span id="L329" class="LineNr">329 </span><span class="Special"> *</span>
-<span id="L330" class="LineNr">330 </span><span class="Special"> * </span><span class="Special">@</span><span class="Special">param</span><span class="Comment"> </span><span class="Underlined">sfd</span><span class="Statement"> The ARP socket for receive ARP replies.</span>
-<span id="L331" class="LineNr">331 </span><span class="Special"> * </span><span class="Special">@</span><span class="Special">param</span><span class="Comment"> </span><span class="Underlined">ifname</span><span class="Statement"> The name of the interface network.</span>
-<span id="L332" class="LineNr">332 </span><span class="Special"> * </span><span class="Special">@</span><span class="Special">param</span><span class="Comment"> </span><span class="Underlined">table</span><span class="Statement"> The ARPTable that contains the ARP entries. </span>
-<span id="L333" class="LineNr">333 </span><span class="Special"> *</span>
-<span id="L334" class="LineNr">334 </span><span class="Special"> * </span><span class="Special">@</span><span class="Special">throw</span><span class="Comment"> </span><span class="Underlined">runtime_error</span><span class="Statement"> If a request of add ARP entry failed.</span>
-<span id="L335" class="LineNr">335 </span><span class="Comment"> </span><span class="Special">*/</span>
+<span id="L326" class="Folded">326 </span><span class="Folded">+-- 10 líneas: *-------------------------------------------------------------------------------------------------------------------------------------------------------</span>
 <span id="L336" class="LineNr">336 </span><span class="Type">void</span> guard( <span class="Type">int</span> sfd, <span class="Type">const</span> <span class="Type">char</span> *ifname, <span class="Type">const</span> ARPTable &amp;table )
-<span id="L337" class="LineNr">337 </span>{
-<span id="L338" class="LineNr">338 </span>    ARPFrame reply;
-<span id="L339" class="LineNr">339 </span>    set&lt;<span class="Type">uint32_t</span>&gt; ignored;
-<span id="L340" class="LineNr">340 </span>    string option;
-<span id="L341" class="LineNr">341 </span>    <span class="Type">bool</span> find;
-<span id="L342" class="LineNr">342 </span>
-<span id="L343" class="LineNr">343 </span>    <span class="Statement">while</span>( active ){
-<span id="L344" class="LineNr">344 </span>        <span class="Comment">// Receive the data</span>
-<span id="L345" class="LineNr">345 </span>        <span class="Statement">if</span>( read( sfd, &amp;reply, <span class="Statement">sizeof</span>(reply) ) &gt; <span class="Constant">0</span> ){
-<span id="L346" class="LineNr">346 </span>            <span class="Comment">// Verify the reply</span>
-<span id="L347" class="LineNr">347 </span>            <span class="Statement">if</span>( ntohs(reply.opcode) == ARPOP_REPLY ){
-<span id="L348" class="LineNr">348 </span>                HWAddr hw( reply.hw_src );
-<span id="L349" class="LineNr">349 </span>                <span class="Type">struct</span> in_addr ip = { reply.ip_src };
-<span id="L350" class="LineNr">350 </span>
-<span id="L351" class="LineNr">351 </span>                <span class="Statement">try</span>{
-<span id="L352" class="LineNr">352 </span>                    <span class="Type">struct</span> in_addr reg = table.at(hw); <span class="Comment">// Check our ARP Table for the sender.</span>
-<span id="L353" class="LineNr">353 </span>
-<span id="L354" class="LineNr">354 </span>                    <span class="Statement">if</span>( reg.s_addr != ip.s_addr &amp;&amp;  <span class="Comment">// If the MAC doesn't match with the IP</span>
-<span id="L355" class="LineNr">355 </span>                            ignored.find(ip.s_addr) == ignored.end() ){ <span class="Comment">// ... And it's not ignored</span>
-<span id="L356" class="LineNr">356 </span>                            find = <span class="Constant">true</span>;
-<span id="L357" class="LineNr">357 </span>
-<span id="L358" class="LineNr">358 </span>                            <span class="Comment">// Notice to the user</span>
-<span id="L359" class="LineNr">359 </span>                            cout &lt;&lt; hw.toString() &lt;&lt; <span class="Constant">&quot; is poisoning &quot;</span> &lt;&lt; inet_ntoa(ip) &lt;&lt;
-<span id="L360" class="LineNr">360 </span>                                <span class="Constant">&quot;. Would you like to add a permanent entry to avoid the faking? (Y/N) &quot;</span>;
-<span id="L361" class="LineNr">361 </span>                            getline( cin, option );
-<span id="L362" class="LineNr">362 </span>
-<span id="L363" class="LineNr">363 </span>                            <span class="Statement">if</span>( option != <span class="Constant">&quot;N&quot;</span> &amp;&amp; option != <span class="Constant">&quot;n&quot;</span> ){
-<span id="L364" class="LineNr">364 </span>                                find = <span class="Constant">false</span>;
-<span id="L365" class="LineNr">365 </span>                                <span class="Statement">for</span>( <span class="Type">auto</span> &amp;i : table ){ <span class="Comment">// Look for the IP Address, if it is.</span>
-<span id="L366" class="LineNr">366 </span>                                    <span class="Statement">if</span>( i.second.s_addr == ip.s_addr ){
-<span id="L367" class="LineNr">367 </span>                                        <span class="Statement">try</span>{
-<span id="L368" class="LineNr">368 </span>                                            addARPEntry( ifname, ip, i.first );
-<span id="L369" class="LineNr">369 </span>                                            cout &lt;&lt; <span class="Constant">&quot;Entry added&quot;</span> &lt;&lt; endl;
-<span id="L370" class="LineNr">370 </span>                                            find = <span class="Constant">true</span>;
-<span id="L371" class="LineNr">371 </span>                                        }
-<span id="L372" class="LineNr">372 </span>                                        <span class="Statement">catch</span>( runtime_error &amp;e ){
-<span id="L373" class="LineNr">373 </span>                                            cerr &lt;&lt; e.what() &lt;&lt; endl;
-<span id="L374" class="LineNr">374 </span>                                        }
-<span id="L375" class="LineNr">375 </span>                                        <span class="Statement">break</span>;
-<span id="L376" class="LineNr">376 </span>                                    }
-<span id="L377" class="LineNr">377 </span>                                }
-<span id="L378" class="LineNr">378 </span>                            }
-<span id="L379" class="LineNr">379 </span>                            <span class="Statement">if</span>( !find ) <span class="Comment">// The IP spoofed is not in out ARP Table</span>
-<span id="L380" class="LineNr">380 </span>                                cout &lt;&lt; <span class="Constant">&quot;There's a missing entry. Please run the tool again for a new scan.&quot;</span> &lt;&lt; endl;
-<span id="L381" class="LineNr">381 </span>                            ignored.insert( ip.s_addr );
-<span id="L382" class="LineNr">382 </span>                        } <span class="Comment">// End if for ignoring</span>
-<span id="L383" class="LineNr">383 </span>                }
-<span id="L384" class="LineNr">384 </span>                <span class="Comment">// The HW Address of the sender is not in our ARP Table</span>
-<span id="L385" class="LineNr">385 </span>                <span class="Statement">catch</span>( out_of_range ){
-<span id="L386" class="LineNr">386 </span>                    cout &lt;&lt; <span class="Constant">&quot;There's a new device. You should try with a new scan.&quot;</span> &lt;&lt; endl;
-<span id="L387" class="LineNr">387 </span>                } <span class="Comment">// The received entry is not in our ARP Table</span>
-<span id="L388" class="LineNr">388 </span>            } <span class="Comment">// End if for replies ARP</span>
-<span id="L389" class="LineNr">389 </span>        } <span class="Comment">// End if for reading</span>
-<span id="L390" class="LineNr">390 </span>    } <span class="Comment">// End while</span>
-<span id="L391" class="LineNr">391 </span>}
+<span id="L337" class="Folded">337 </span><span class="Folded">+-- 55 líneas: {-------------------------------------------------------------------------------------------------------------------------------------------------------</span>
 <span id="L392" class="LineNr">392 </span>
-<span id="L393" class="LineNr">393 </span><span class="Special">/**</span>
-<span id="L394" class="LineNr">394 </span><span class="Special"> *</span><span class="Special"> </span><span class="Statement">Kill signal handler.</span><span class="Comment"> Change the value of ::active to stop</span>
-<span id="L395" class="LineNr">395 </span><span class="Special"> * </span><span class="Comment">the execution of guard().</span>
-<span id="L396" class="LineNr">396 </span><span class="Comment"> </span><span class="Special">*/</span>
-<span id="L397" class="LineNr">397 </span><span class="Type">void</span> sigKill(<span class="Type">int</span>){
-<span id="L398" class="LineNr">398 </span>    active = <span class="Constant">false</span>;
-<span id="L399" class="LineNr">399 </span>}
+<span id="L393" class="Folded">393 </span><span class="Folded">+--  4 líneas: *-------------------------------------------------------------------------------------------------------------------------------------------------------</span>
+<span id="L397" class="Folded">397 </span><span class="Folded">+--  3 líneas: void sigKill(int){--------------------------------------------------------------------------------------------------------------------------------------</span>
 <span id="L400" class="LineNr">400 </span>
-<span id="L401" class="LineNr">401 </span><span class="Special">/**</span>
-<span id="L402" class="LineNr">402 </span><span class="Special"> *</span><span class="Special"> </span><span class="Statement">Main function of the program.</span>
-<span id="L403" class="LineNr">403 </span><span class="Special"> *</span>
-<span id="L404" class="LineNr">404 </span><span class="Special"> * </span><span class="Special">@</span><span class="Special">param</span><span class="Comment"> </span><span class="Underlined">interface_name</span><span class="Statement"> The name of the network interface to use.</span>
-<span id="L405" class="LineNr">405 </span><span class="Comment"> </span><span class="Special">*/</span>
+<span id="L401" class="Folded">401 </span><span class="Folded">+--  5 líneas: *-------------------------------------------------------------------------------------------------------------------------------------------------------</span>
 <span id="L406" class="LineNr">406 </span><span class="Type">int</span> main( <span class="Type">int</span> argc, <span class="Type">char</span> **argv )
-<span id="L407" class="LineNr">407 </span>{
-<span id="L408" class="LineNr">408 </span>    <span class="Statement">if</span>( argc != <span class="Constant">2</span> ){
-<span id="L409" class="LineNr">409 </span>        cerr &lt;&lt; <span class="Constant">&quot;Uso:</span><span class="Special">\n\t</span><span class="Constant">&quot;</span> &lt;&lt; *argv &lt;&lt; <span class="Constant">&quot; interface_name&quot;</span> &lt;&lt; endl;
-<span id="L410" class="LineNr">410 </span>        <span class="Statement">return</span> <span class="Constant">1</span>;
-<span id="L411" class="LineNr">411 </span>    }
-<span id="L412" class="LineNr">412 </span>
-<span id="L413" class="LineNr">413 </span>    <span class="Type">int</span> sockfd;
-<span id="L414" class="LineNr">414 </span>    LocalData data;
-<span id="L415" class="LineNr">415 </span>    ARPTable arpTable;
-<span id="L416" class="LineNr">416 </span>
-<span id="L417" class="LineNr">417 </span>    <span class="Statement">try</span>{
-<span id="L418" class="LineNr">418 </span>        data = loadLocalData( argv[<span class="Constant">1</span>] );
-<span id="L419" class="LineNr">419 </span>        sockfd = initSocket( data.ifindex );
-<span id="L420" class="LineNr">420 </span>    }
-<span id="L421" class="LineNr">421 </span>    <span class="Statement">catch</span>( runtime_error &amp;e ){
-<span id="L422" class="LineNr">422 </span>        cerr &lt;&lt; e.what() &lt;&lt; endl;
-<span id="L423" class="LineNr">423 </span>        <span class="Statement">return</span> <span class="Constant">1</span>;
-<span id="L424" class="LineNr">424 </span>    }
-<span id="L425" class="LineNr">425 </span>
-<span id="L426" class="LineNr">426 </span>
-<span id="L427" class="LineNr">427 </span>    arpTable = scan( sockfd, data );
-<span id="L428" class="LineNr">428 </span>
-<span id="L429" class="LineNr">429 </span>    <span class="Comment">// Output the ARP table.</span>
-<span id="L430" class="LineNr">430 </span>    cout &lt;&lt; arpTable.size() &lt;&lt; <span class="Constant">&quot; entries found. &quot;</span>
-<span id="L431" class="LineNr">431 </span>        <span class="Constant">&quot;If you think there's missing devices, please run the tool again.</span><span class="Special">\n\n</span><span class="Constant">&quot;</span>
-<span id="L432" class="LineNr">432 </span>        <span class="Constant">&quot;</span><span class="Special">\t</span><span class="Constant">HW Address</span><span class="Special">\t\t\t</span><span class="Constant">IP Address</span><span class="Special">\n</span><span class="Constant">&quot;</span>;
-<span id="L433" class="LineNr">433 </span>    <span class="Statement">for</span>( <span class="Type">auto</span> &amp;i : arpTable )
-<span id="L434" class="LineNr">434 </span>        cout &lt;&lt; <span class="Special">'\t'</span> &lt;&lt; i.first.toString() &lt;&lt; <span class="Constant">&quot;</span><span class="Special">\t\t</span><span class="Constant">&quot;</span> &lt;&lt; inet_ntoa(i.second) &lt;&lt; endl;
-<span id="L435" class="LineNr">435 </span>
-<span id="L436" class="LineNr">436 </span>    cout &lt;&lt; <span class="Constant">&quot;</span><span class="Special">\n</span><span class="Constant">Analyzing ARP replies. Press CTRL-C to exit</span><span class="Special">\n\n</span><span class="Constant">&quot;</span>;
-<span id="L437" class="LineNr">437 </span>    signal( <span class="Constant">SIGINT</span>, sigKill );
-<span id="L438" class="LineNr">438 </span>    guard( sockfd, argv[<span class="Constant">1</span>], arpTable );
-<span id="L439" class="LineNr">439 </span>
-<span id="L440" class="LineNr">440 </span>    cout &lt;&lt; <span class="Constant">&quot;</span><span class="Special">\r</span><span class="Constant">Closing socket...&quot;</span> &lt;&lt; endl;
-<span id="L441" class="LineNr">441 </span>    close( sockfd );
-<span id="L442" class="LineNr">442 </span>    <span class="Statement">return</span> <span class="Constant">0</span>;
-<span id="L443" class="LineNr">443 </span>}
+<span id="L407" class="Folded">407 </span><span class="Folded">+-- 37 líneas: {-------------------------------------------------------------------------------------------------------------------------------------------------------</span>
 </pre>
 </body>
 </html>
