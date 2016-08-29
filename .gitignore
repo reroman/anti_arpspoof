@@ -1,0 +1,16 @@
+*.ps
+*.dvi
+*.aux
+*.toc
+*.idx
+*.ind
+*.ilg
+*.log
+*.out
+*.brf
+*.blg
+*.bbl
+*.swp
+*.swo
+anti_arpspoof
+Doxyfile
